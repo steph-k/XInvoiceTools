@@ -1,0 +1,119 @@
+
+use org.apache.jempbox.xmp.XMPMetadata
+use org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId
+use org.apache.pdfbox.pdmodel.PDDocument
+use org.apache.pdfbox.pdmodel.PDDocumentCatalog
+use org.apache.pdfbox.pdmodel.PDPage
+use org.apache.pdfbox.pdmodel.common.PDMetadata
+use org.apache.pdfbox.pdmodel.PDPageContentStream
+use org.apache.pdfbox.pdmodel.font.PDFont
+use org.apache.pdfbox.pdmodel.font.PDTrueTypeFont
+use org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent
+use org.apache.pdfbox.pdmodel.PDDocumentInformation
+use org.apache.pdfbox.pdmodel.documentinterchange.logicalstructure.PDMarkInfo
+
+use java.io.File
+use java.io.FileInputStream
+
+rem /**
+rem  * PDFA Class: convert a (BBj-generated) PDF from SYSPRINT or BBjForm to PDF/A 1b Standard
+rem  * by adding the necessary header fields
+rem  */
+class public PDFA
+
+    rem /**
+    rem  * ICC Profile to Embed
+    rem  * see https://www.adobe.com/digitalimag/adobergb.html
+    rem  */
+    field public static BBjString ICC$ = "XInvoiceTools/pdfa/icc/AdobeRGB1998.icc"
+    
+    rem /**
+    rem  * creator: the creator application
+    rem  * you might want to set this to your application product name
+    rem  */
+    field public static BBjString Creator$ = "BASIS BBj-based solution"
+    
+    rem /**
+    rem  * producer: the producer tool
+    rem  */
+    field public static BBjString Producer$ = "BASIS BBj PDFBox library"
+    
+
+    rem /**
+    rem  * updatePDF: add PDF/A-1b header data to a PDF file
+    rem  * that was created using BBjForm or SYSPRINT
+    rem  * @param BBjString inpdf$: the path to the existing PDF file
+    rem  * @param BBjString outpdf$: the path to the new PDF file 
+    rem  */
+    method public static void updatePDF(BBjString in$, BBjString out$)
+    
+        ch=unt
+        open (ch,err=open_failed) in$
+        close (ch)
+        
+        doc! = PDDocument.load(new File(in$),err=open_failed)
+        cat! = doc!.getDocumentCatalog()
+        metadata! = new PDMetadata(doc!)
+        cat!.setMetadata(metadata!)
+        
+        rem jempbox version
+        xmp! = new XMPMetadata()
+        pdfaid! = new XMPSchemaPDFAId(xmp!)
+        xmp!.addSchema(pdfaid!)
+        pdfaid!.setConformance("B")
+        pdfaid!.setPart(1)
+        pdfaid!.setAbout("")
+        
+        info! = doc!.getDocumentInformation()
+        
+        dc! = xmp!.addDublinCoreSchema()
+        
+        dc!.addCreator(#Creator$)
+        dc!.setAbout("")
+        
+        xsb! = xmp!.addBasicSchema()
+        xsb!.setAbout("")
+        xsb!.setCreatorTool(#Creator$)
+        xsb!.setCreateDate(java.util.GregorianCalendar.getInstance())
+        
+        pdi! = new PDDocumentInformation()
+        pdi!.setProducer(#Producer$)
+        pdi!.setAuthor(#Creator$)
+        doc!.setDocumentInformation(pdi!)
+        
+        pdf! = xmp!.addPDFSchema()
+        pdf!.setProducer(#Producer$)
+        pdf!.setAbout("")
+        
+        markinfo! = new PDMarkInfo()
+        markinfo!.setMarked(Boolean.TRUE)
+        doc!.getDocumentCatalog().setMarkInfo(markinfo!)
+        
+        metadata!.importXMPMetadata(xmp!.asByteArray())
+        
+        rem retrieve icc
+        rem this file cannot be added in PDFBox, it must be downloaded
+        rem its localization is http:remwww.color.org/sRGB_IEC61966-2-1_black_scaled.icc
+        rem UNIX command to retrieve :
+        rem wget -O target/sRGB_IEC61966-2-1_black_scaled.icc
+        rem http:remwww.color.org/sRGB_IEC61966-2-1_black_scaled.icc
+        colorProfile! = new FileInputStream(BBjAPI().getFileSystem().resolvePath(#ICC$))
+        
+        rem create output intent
+        oi! = new PDOutputIntent(doc!, colorProfile!)
+        oi!.setInfo("sRGB IEC61966-2.1")
+        oi!.setOutputCondition("sRGB IEC61966-2.1")
+        oi!.setOutputConditionIdentifier("sRGB IEC61966-2.1")
+        oi!.setRegistryName("http:remwww.color.org")
+        cat!.addOutputIntent(oi!)
+        
+        doc!.save(new File(out$))    
+        methodret
+        
+        
+        open_failed:
+            throw "failed to open "+in$,12
+    methodend
+
+classend
+
