@@ -1,0 +1,80 @@
+use java.io.File
+use java.io.FileInputStream
+
+use ::XInvoiceTools/pdfa/PDFA.bbj::PDFA
+
+wnd! = BBjAPI().openSysGui("X0").addWindow(410,210,220,480,"BBj PDF/A Demos",$00000002$)
+
+btn_sysprint! = wnd!.addButton(100,10,10,200,40,"Create PDF/A with SYSPRINT")
+btn_sysprint!.setCallback(BBjAPI.ON_BUTTON_PUSH,"sysprint")
+
+btn_sysprint! = wnd!.addButton(101,10,60,200,40,"Create PDF/A with BBjPDFForm")
+btn_sysprint!.setCallback(BBjAPI.ON_BUTTON_PUSH,"bbjform")
+
+wnd!.setCallback(BBjAPI.ON_CLOSE,"byebye")
+
+process_events
+
+byebye: 
+    bye
+
+
+sysprint:
+
+    tmpfile! = File.createTempFile("__out__",".pdf")
+    tmpfile!.deleteOnExit()
+
+    outfile! = File.createTempFile("__out__",".pdf")
+    outfile!.deleteOnExit()
+
+    rem need PDFPASS= to be empty to disable security in PDF!
+    mode$="PDF,PDFPASS=,FILE="+tmpfile!.getAbsolutePath()
+    ch=unt
+    open (ch,mode=mode$)"LP"
+    print (ch)'FONT'("Arial"),"Hello SYSPRINT!  Welcome to PDF printing!"
+    logo$="XInvoiceTools/Demo/images/basis.bmp"
+    print (ch)'BITMAP'(1,1,5,2,logo$)
+    close (ch)
+    
+    PDFA.updatePDF(tmpfile!.getAbsolutePath(),outfile!.getAbsolutePath())
+    tmpfile!.delete()
+    
+    java.awt.Desktop.getDesktop().open(outfile!)
+    wait 2
+    outfile!.delete()
+return
+
+
+bbjform:
+
+    tmpfile! = File.createTempFile("__out__",".pdf")
+    tmpfile!.deleteOnExit()
+
+    outfile! = File.createTempFile("__out__",".pdf")
+    outfile!.deleteOnExit()
+
+    tmpfile!.delete()
+    form!=BBjAPI().getBBjPDFForm(tmpfile!.getAbsolutePath())
+    page!=form!.createPage()
+    
+    logo$="XInvoiceTools/Demo/images/basis.jpg"
+    image!=page!.newImage(logo$,200,0,150,53)
+    page!.add(image!)
+
+    LET para!=page!.newParagraph()
+    para!.setFont(new java.awt.Font("Courier New",java.awt.Font.PLAIN,10))
+    para!.setText(new java.text.AttributedString("text"))
+    para!.setText("This is a BBjForm test page")
+    page!.add(para!)
+    form!.print()
+
+    PDFA.updatePDF(tmpfile!.getAbsolutePath(),outfile!.getAbsolutePath())
+    tmpfile!.delete()
+    
+    java.awt.Desktop.getDesktop().open(outfile!)
+    wait 2
+    outfile!.delete()
+
+return
+
+release
