@@ -20,6 +20,11 @@ rem  * PDFA Class: convert a (BBj-generated) PDF from SYSPRINT or BBjForm to PDF
 rem  * by adding the necessary header fields
 rem  */
 class public PDFA
+    
+    rem /**
+    rem  * Debug: set to 1 to get verbose output
+    rem  */
+    field public static BBjNumber Debug=0
 
     rem /**
     rem  * ICC Profile to Embed
@@ -106,6 +111,34 @@ class public PDFA
         oi!.setOutputConditionIdentifier("sRGB IEC61966-2.1")
         oi!.setRegistryName("http:remwww.color.org")
         cat!.addOutputIntent(oi!)
+        
+        
+        rem check pictures
+        rem see https://stackoverflow.com/questions/8705163/extract-images-from-pdf-using-pdfbox
+        rem todo: recursively enter PDFormXObject types
+        pages! = doc!.getPages()
+        it! = pages!.iterator()
+        while it!.hasNext()
+            page! = it!.next()
+            resources! = page!.getResources()
+            
+            it1! = resources!.getXObjectNames().iterator()
+            while it1!.hasNext()
+                resourcename! = it1!.next()
+                resource! = resources!.getXObject(resourcename!)
+                
+                if resource!.getClass().getCanonicalName()="org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject" then
+                    if (resource!.getInterpolate()) then
+                        if (#Debug) then
+                            PRINT "XInvoiceTools PDFA Warning: Setting Image Interpolate to FALSE for PDF/A compatibility"
+                        fi
+                        resource!.setInterpolate(false)
+                    fi
+                fi
+                
+            wend
+        wend
+        
         
         doc!.save(new File(out$))    
         methodret
