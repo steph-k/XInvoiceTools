@@ -271,7 +271,7 @@ class public MustangWriter implements IZUGFeRDExportableTransaction
     
 classend
 
-REM Class.forName("use org.mustangproject.ZUGFeRD.IZUGFeRDExportableItem",err=classpath_err)
+Class.forName("org.mustangproject.ZUGFeRD.ZUGFeRDExporter",err=classpath_err)
 
 pdf$ = BBjAPI().getFileSystem().resolvePath("XInvoiceTools/zugferd/MustangGnuaccountingBeispielRE-20170509_505blanko.pdf")
 pdf_out$ = pdf$(1,len(pdf$)-10)+"out.pdf"
@@ -280,10 +280,16 @@ mwr! = new MustangWriter()
 ze! = new ZUGFeRDExporterFromA1Factory().setProducer("BASIS BBj")
 :                    .setCreator(System.getProperty("user.name"))
 :                    .load(pdf$)
+
 ze!.PDFattachZugferdFile(mwr!)
 ze!.export(pdf_out$)
+
+rem show the PDF (this only works on local machines - who wants to make this ThinClient-proof?)
+java.awt.Desktop.getDesktop().open(new java.io.File(pdf_out$))
         
-end
+release
 
 classpath_err:
     PRINT "Add the mustang...jar to your classpath!"
+    input *
+release

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoice" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" whenResourceMissingType="Error" uuid="9e44446f-7a73-416f-96fe-680ede426f11">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="test"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="640"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="346"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="255"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="737"/>
+	<property name="net.sf.jasperreports.export.pdfa.conformance" value="pdfa1b" />
+	<property name="net.sf.jasperreports.export.pdfa.icc.profile.path" value="../../icc/AdobeRGB1998.icc" />
+	<style name="default" isDefault="true" fontName="DejaVu Sans"/>
+	<parameter name="INVNO" class="java.lang.String">
+		<parameterDescription><![CDATA[Invoice Number]]></parameterDescription>
+		<defaultValueExpression><![CDATA["161924"]]></defaultValueExpression>
+	</parameter>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="idCUSTOMER" class="java.lang.Integer"/>
+	<field name="date" class="java.sql.Date"/>
+	<field name="item" class="java.lang.String"/>
+	<field name="credits" class="java.lang.Integer"/>
+	<field name="amtnet" class="java.lang.Integer"/>
+	<field name="vatperc" class="java.lang.Integer"/>
+	<field name="amtvat" class="java.lang.Integer"/>
+	<field name="amttotal" class="java.lang.Integer"/>
+	<field name="paid" class="java.lang.Boolean"/>
+	<field name="paydate" class="java.sql.Date"/>
+	<field name="paidwith" class="java.lang.String"/>
+	<field name="idAccountBooking" class="java.lang.Integer"/>
+	<field name="COLUMN_14" class="java.lang.Integer"/>
+	<field name="name1" class="java.lang.String"/>
+	<field name="name2" class="java.lang.String"/>
+	<field name="street" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="country" class="java.lang.String"/>
+	<field name="lang" class="java.lang.String"/>
+	<field name="password" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="vatid" class="java.lang.String"/>
+	<field name="linktag" class="java.lang.String"/>
+	<field name="balance" class="java.lang.Integer"/>
+	<field name="balance_unpaid" class="java.lang.Integer"/>
+	<field name="balance_unpaid_mode" class="java.lang.Integer"/>
+	<field name="created" class="java.sql.Timestamp"/>
+	<field name="logo" class="java.lang.String"/>
+	<field name="footerhtml" class="java.lang.String"/>
+	<field name="welcometext" class="java.lang.String"/>
+	<field name="subdomain" class="java.lang.String"/>
+	<field name="confirmtag" class="java.lang.String"/>
+	<field name="forgotpasswordtag" class="java.lang.String"/>
+	<field name="amtvateur" class="java.math.BigDecimal"/>
+	<field name="amtneteur" class="java.math.BigDecimal"/>
+	<field name="amttotaleur" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="710" splitType="Stretch">
+			<textField>
+				<reportElement x="41" y="146" width="300" height="15" uuid="63c5bf15-8a85-4add-9fd8-6d4698513e56"/>
+				<textFieldExpression><![CDATA[$F{name1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="41" y="161" width="300" height="15" isRemoveLineWhenBlank="true" uuid="bd81d0d6-448e-41df-a276-5cb80bedcf95"/>
+				<textFieldExpression><![CDATA[$F{name2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 EUR;-#,##0.00 EUR">
+				<reportElement x="424" y="610" width="100" height="14" uuid="f1b309e1-ff2b-4d78-8368-b5c7f132ec76">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{amtneteur}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="334" y="610" width="87" height="14" uuid="7680f515-c1b3-4850-a5f0-f86b9fe735d8"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Betrag netto]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="251" y="624" width="170" height="14" uuid="ef79d487-8d2e-405a-a1b1-623b6f5551f2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{vatperc}.toString()+" % Mwst."]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 EUR;-#,##0.00 EUR">
+				<reportElement x="424" y="624" width="100" height="14" uuid="4411f6f5-b3e4-4325-9b38-5a06955e3396"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{amtvateur}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 EUR;-#,##0.00 EUR">
+				<reportElement positionType="Float" x="424" y="638" width="100" height="14" uuid="58dce2bc-37aa-4977-84e3-193cd6f0a831"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amttotaleur}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="321" y="638" width="100" height="14" uuid="1d8cacc6-11e1-420a-b629-060312e07795"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="41" y="176" width="300" height="15" uuid="258ab98e-2c18-4786-97b1-f1c9e9e33a41"/>
+				<textFieldExpression><![CDATA[$F{street}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="41" y="197" width="300" height="15" uuid="6d4b80bc-8083-4d8d-be23-3676f6db9d8a"/>
+				<textFieldExpression><![CDATA[$F{zip}+" "+$F{city}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="231" width="100" height="30" uuid="52e193a0-16e3-4c40-8e3b-0d332d5eb3bc"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rechnung]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="169" y="272" width="100" height="14" uuid="c7ba2a93-b964-45f5-8483-45f93e0ee83d"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="272" width="100" height="14" uuid="584ab10b-4851-4cad-85ce-4c8bd233bbfe"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rechnungsdatum:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="169" y="286" width="100" height="14" uuid="a77c7f85-ad18-4675-adfd-893191a090bd"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="286" width="100" height="14" uuid="6d479a05-c20c-4638-9458-9069f8d60e35"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rechnungsnummer:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="169" y="300" width="100" height="14" uuid="22f8b93d-f1bd-4f15-94a2-8195d7ac4d6b"/>
+				<textFieldExpression><![CDATA[$F{idCUSTOMER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="300" width="100" height="14" uuid="6d01aab2-a9f2-4952-9e67-b60573035ed4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kundennummer:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="41" y="354" width="458" height="86" uuid="088efc8a-b022-431d-8029-124788f95f9c"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Sehr geehrte Damen und Herren,<br><br>Hiermit erlauben wir uns folgende Leistungen in Rechnung zu stellen:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="41" y="400" width="380" height="122" uuid="9e8af393-dc12-485f-95fe-94b7f0115be7"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 EUR;-#,##0.00 EUR">
+				<reportElement x="424" y="400" width="100" height="20" uuid="8e573e28-6a43-4788-ae8e-53a6a61ba4af">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amtneteur}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="41" y="522" width="479" height="79" uuid="4c5c645b-c42d-4fa1-8933-9bd945096847"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Vielen Dank für Ihr Vertrauen in unsere Produkte und Dienstleistungen<br><br>Mit herzlichen Grüßen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="42" y="660" width="477" height="49" uuid="fd01a304-ac50-45dd-8bc8-6a942e31d689"/>
+				<textElement markup="html"/>
+				<text><![CDATA[Zahlbar sofort rein netto ohne Abzug.]]></text>
+			</staticText>
+			<image>
+				<reportElement x="400" y="20" width="145" height="52" uuid="75d32c35-705d-437f-a93d-eddc3a1a03cc"/>
+				<imageExpression><![CDATA["../assets/images/basis.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="39" y="22" width="311" height="50" uuid="9eec979a-760a-4761-866d-0af7769d698a"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BEISPIEL - VOID - ]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="57">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</pageFooter>
+</jasperReport>
