@@ -8,13 +8,14 @@ It is intended to demonstrate how to
 # Creating PDF/A for BBj Output
 
 The BBjPrintSamples contains three subdirectories, one for each discussed path. (Contribution to improving these samples currently highly welcome!)
-They all produce their PDF output to the "output" directory.
+
+Demo.bbj shows the following three types of BBj output to PDF, and conversion to PDF-A 1b:
 
 ## BBJasper
 
 Sample: Demo/PDFA_Jasper
 
-For BBJasper, the success mostly is on the JasperReports side. The following two sources describe the steps we used in this sample:
+For BBJasper, the success is only on the JasperReports side, which can do PDF/A directly. The following two sources describe the steps we used in this sample:
 
 * https://community.jaspersoft.com/wiki/pdf-support-jasperreports-library
 * https://stackoverflow.com/questions/36306170/how-can-i-export-report-to-pdf-a-1a-pdf-a-1b#new-answer
@@ -36,19 +37,15 @@ iccpath$= BBjAPI().getFileSystem().resolvePath("../../icc/AdobeRGB1998.icc")
 report!.getJasperReport().setProperty("net.sf.jasperreports.export.pdfa.icc.profile.path",iccpath$)
 ```
 
-## BBjForm
+## BBjForm and SYSPRINT 
 
-Sample: Demo/PDFA_BBjForm
+These two produce PDF which are almost okay, but miss a few metadata / header fields. The PDFA class adds these, which is shown in this demo. 
 
-## SYSPRINT 
+## Note about Unform
 
-Sample: Demo/PDFA_SYSPRINT
+We have successfully tested the PDFA - class on output from the Unform product. It appears to work nicely and adds all necessary meta data, also for older versions. If somebody has Unform output which does not fully validate, open an issue and attach the PDF file (or send it offline if it contains sensitive data).
 
-## Unform
-
-We have successfully tested the PDFA - class on Unform output. It works nicely and adds all necessary meta data, also for older versions.
-
-## Validating PDF/A
+# Validating PDF/A
 
 The "validation" subdirectory contains a validator "PDFBox_PDFA_Validation.bbj" that iterates all PDFs in the "output" directory and creates a print preview listing the results. This validator is using the PDFBox library that ships with BBj.
 
