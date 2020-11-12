@@ -1,0 +1,37 @@
+use java.io.File
+use java.io.FileInputStream
+use ::XInvoiceTools/pdfa/PDFA.bbj::PDFA
+
+rem preparing the temporary paths
+out_path$ = BBjAPI().getFileSystem().resolvePath("XInvoiceTools")+"/output/jasper.pdf"
+mkdir BBjAPI().getFileSystem().resolvePath("XInvoiceTools")+"/output/",err=*next
+erase out_path$,err=*next
+tmpfile! = File.createTempFile("__out__",".pdf")
+tmpfile!.delete()
+tmpfile!.deleteOnExit()
+
+rem creating some PDF with a logo and some text
+rem volunteers wanted for a nicer sample print !!!
+form!=BBjAPI().getBBjPDFForm(tmpfile!.getAbsolutePath())
+page!=form!.createPage()
+logo$=BBjAPI().getFileSystem().resolvePath("XInvoiceTools/Demo/assets/images/basis.jpg")
+image!=page!.newImage(logo$,200,0,150,53)
+page!.add(image!)
+LET para!=page!.newParagraph()
+para!.setFont(new java.awt.Font("Courier New",java.awt.Font.PLAIN,10))
+para!.setText(new java.text.AttributedString("text"))
+para!.setText("This is a BBjForm test page")
+page!.add(para!)
+form!.print()
+
+rem now enhance the PDF to make it PDFA-1b
+PDFA.setDebug(1)
+PDFA.updatePDF(tmpfile!.getAbsolutePath(),out_path$)
+
+rem delete the temp file
+tmpfile!.delete()
+
+rem show the PDF (this only works on local machines - who wants to make this ThinClient-proof?)
+java.awt.Desktop.getDesktop().open(new java.io.File(out_path$))
+
+release
