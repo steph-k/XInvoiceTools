@@ -1,5 +1,12 @@
 use java.io.File
 use java.io.FileInputStream
+use com.basiscomponents.db.DataRow
+use com.basiscomponents.db.ResultSet
+
+use ::reporting/bbjasper/bbjasper.bbj::BBJasperReport
+use ::reporting/bbjasper/bbjasper.bbj::BBJasperViewerWindow
+
+
 
 use ::XInvoiceTools/pdfa/PDFA.bbj::PDFA
 
@@ -10,6 +17,10 @@ btn_sysprint!.setCallback(BBjAPI.ON_BUTTON_PUSH,"sysprint")
 
 btn_sysprint! = wnd!.addButton(101,10,60,200,40,"Create PDF/A with BBjPDFForm")
 btn_sysprint!.setCallback(BBjAPI.ON_BUTTON_PUSH,"bbjform")
+
+btn_jasper! = wnd!.addButton(102,10,110,200,40,"Create PDF/A with Jasper")
+btn_jasper!.setCallback(BBjAPI.ON_BUTTON_PUSH,"jasper")
+
 
 wnd!.setCallback(BBjAPI.ON_CLOSE,"byebye")
 
@@ -32,7 +43,7 @@ sysprint:
     ch=unt
     open (ch,mode=mode$)"LP"
     print (ch)'FONT'("Arial"),"Hello SYSPRINT!  Welcome to PDF printing!"
-    logo$="XInvoiceTools/Demo/images/basis.bmp"
+    logo$="XInvoiceTools/Demo/assets/images/basis.bmp"
     print (ch)'BITMAP'(1,1,5,2,logo$)
     close (ch)
     
@@ -57,7 +68,7 @@ bbjform:
     form!=BBjAPI().getBBjPDFForm(tmpfile!.getAbsolutePath())
     page!=form!.createPage()
     
-    logo$="XInvoiceTools/Demo/images/basis.jpg"
+    logo$="XInvoiceTools/Demo/assets/images/basis.jpg"
     image!=page!.newImage(logo$,200,0,150,53)
     page!.add(image!)
 
@@ -74,6 +85,61 @@ bbjform:
     java.awt.Desktop.getDesktop().open(outfile!)
     wait 2
     outfile!.delete()
+
+return
+
+
+jasper:
+
+    rem see https://community.jaspersoft.com/wiki/pdf-support-jasperreports-library
+    rem see https://stackoverflow.com/questions/36306170/how-can-i-export-report-to-pdf-a-1a-pdf-a-1b#new-answer
+    rem see https://supportdownloads.adobe.com/detail.jsp?ftpID=4077
+
+    
+    declare DataRow rec!
+    declare ResultSet rs!
+    declare BBJasperReport report!
+    
+    amtnet = 500
+    vatperc = 16
+    item$="Misc. Goods and Services"
+    rec! = new DataRow()
+    rec!.setFieldValue("date",      java.sql.Types.DATE, jul(0,0,0))
+    rec!.setFieldValue("id",        Integer.parseInt("12345"))
+    rec!.setFieldValue("idCUSTOMER",Integer.parseInt("999999"))
+    rec!.setFieldValue("name1","BASIS Europe")
+    rec!.setFieldValue("name2","Professional IT Service GmbH")
+    rec!.setFieldValue("street","Nell-Breuning-Allee 6")
+    rec!.setFieldValue("zip","66115")
+    rec!.setFieldValue("city","Saarbrücken")
+    rec!.setFieldValue("amtneteur",    amtnet)
+    rec!.setFieldValue("vatperc",   Integer.parseInt("16"))
+    rec!.setFieldValue("amtvateur",    amtnet*vatperc/100)
+    rec!.setFieldValue("amttotaleur",    amtnet + amtnet*vatperc/100)
+    rec!.setFieldValue("item",      item$)
+             
+             
+    rs! = new ResultSet()
+    rs!.add(rec!)
+    
+    report_path$ = BBjAPI().getFileSystem().resolvePath("XInvoiceTools/Demo/assets/invoice.jrxml")
+    out_path$ = BBjAPI().getFileSystem().resolvePath("XInvoiceTools")+"/output/jasper.pdf"
+    mkdir BBjAPI().getFileSystem().resolvePath("XInvoiceTools")+"/output/",err=*next
+    erase out_path$,err=*next
+    
+    jrdata! = new com.basiscomponents.db.util.JRDataSourceAdapter(rs!)
+    report! = new BBJasperReport(report_path$,jrdata!)
+    
+    locale$ = stbl("!LOCALE")
+    report!.setLocale(locale$)
+    
+    rem "SET THE ICC FILE PATH INTO THE REPORT"
+    iccpath$= BBjAPI().getFileSystem().resolvePath("XInvoiceTools/pdfa/icc/AdobeRGB1998.icc")
+    report!.getJasperReport().setProperty("net.sf.jasperreports.export.pdfa.icc.profile.path",iccpath$)
+    report!.fill(1)
+    report!.exportToPDF(0, out_path$)
+    
+    java.awt.Desktop.getDesktop().open(new java.io.File(out_path$))
 
 return
 
