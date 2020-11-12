@@ -4,8 +4,5 @@
   "version": "0.1.0",
   "author": "BASIS Europe",
   "licence": "MIT",
-  "bbj_dependency": "20.20",
-  "screenshots": [],
-  "plugin_dependencies": [
-  ]
+  "bbj_dependency": "20.20"
 }
