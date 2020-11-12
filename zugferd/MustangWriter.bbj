@@ -1,0 +1,289 @@
+REM This is the transcribed BBj implementation of the MustangWriter Sample from the MustangProject
+REM see https://www.mustangproject.org/ 
+REM and http://github.com/zuGFeRD/mustangproject
+REM 
+REM You need at least the following files in your classpath to run it:
+REM mustang-1.5.1.jar
+REM jaxb-api-2.3.0.jar
+REM activation-1.1.1.jar 
+
+
+use java.io.IOException
+use java.math.BigDecimal
+use java.util.Calendar
+use java.util.Date
+use java.util.GregorianCalendar
+use java.lang.reflect.Array
+
+use org.mustangproject.ZUGFeRD.IZUGFeRDAllowanceCharge
+use org.mustangproject.ZUGFeRD.IZUGFeRDExportableContact
+use org.mustangproject.ZUGFeRD.IZUGFeRDExportableItem
+use org.mustangproject.ZUGFeRD.IZUGFeRDExportableProduct
+use org.mustangproject.ZUGFeRD.IZUGFeRDExportableTransaction
+use org.mustangproject.ZUGFeRD.ZUGFeRDExporter
+use org.mustangproject.ZUGFeRD.ZUGFeRDExporterFromA1Factory
+
+class public Contact implements IZUGFeRDExportableContact 
+
+    method public String getCountry() 
+        methodret "DE"
+    methodend
+
+    method public String getLocation() 
+        methodret "Spielkreis"
+    methodend
+
+    method public String getName() 
+        methodret "Theodor Est"
+    methodend
+
+    method public String getStreet() 
+        methodret "Bahnstr. 42"
+    methodend
+
+    method public String getVATID() 
+        methodret "DE999999999"
+    methodend
+
+    method public String getZIP() 
+        methodret "88802"
+    methodend
+classend
+
+
+class public Item implements IZUGFeRDExportableItem 
+
+    field private BigDecimal price!
+    field private BigDecimal quantity!
+    field private Product product!
+
+    method public Item(BigDecimal price!, BigDecimal quantity!, Product product!) 
+        #price! = price!
+        #quantity! = quantity!
+        #product! = product!
+    methodend
+
+
+    method public BigDecimal getPrice() 
+        methodret #price!
+    methodend
+
+    method public void setPrice(BigDecimal price!) 
+        #price! = price!
+    methodend
+
+    method public BigDecimal getQuantity() 
+        methodret #quantity!
+    methodend
+
+    method public void setQuantity(BigDecimal quantity!) 
+        #quantity! = quantity!
+    methodend
+
+    method public IZUGFeRDExportableProduct getProduct() 
+        methodret #product!
+    methodend
+
+    method public void setProduct(Product product!) 
+        #product! = product!
+    methodend
+
+    method public IZUGFeRDAllowanceCharge[] getItemAllowances() 
+        rem TODO Auto-generated method stub
+        methodret null()
+    methodend
+
+    method public IZUGFeRDAllowanceCharge[] getItemCharges() 
+        rem TODO Auto-generated method stub
+        methodret null()
+    methodend
+classend
+
+class public Product implements IZUGFeRDExportableProduct
+
+    field private String description!
+    field private String name!
+    field private String unit!
+    field private BigDecimal VATPercent!
+
+ 
+    method public Product(String description!, String name!, String unit!, BigDecimal vATPercent!) 
+        #description! = description!
+        #name! = name!
+        #unit! = unit!
+        #VATPercent! = vATPercent!
+    methodend
+
+
+    method public String getDescription() 
+        methodret #description!
+    methodend
+
+    method public void setDescription(String description!) 
+        #description! = description!
+    methodend
+
+    method public String getName() 
+        methodret #name!
+    methodend
+
+    method public void setName(String name!) 
+        #name! = name!
+    methodend
+
+    method public String getUnit() 
+        methodret #unit!
+    methodend
+
+    method public void setUnit(String unit!) 
+        #unit! = unit!
+    methodend
+
+    method public BigDecimal getVATPercent() 
+        methodret #VATPercent!
+    methodend
+
+    method public void setVATPercent(BigDecimal vATPercent!) 
+        VATPercent! = vATPercent!
+    methodend
+
+classend
+
+
+class public MustangWriter implements IZUGFeRDExportableTransaction 
+
+    method public String getCurrency() 
+        methodret "EUR"
+    methodend
+
+    method public Date getDeliveryDate() 
+        methodret new GregorianCalendar(2017, Calendar.NOVEMBER, 17).getTime()
+    methodend
+
+    method public Date getDueDate() 
+        methodret new GregorianCalendar(2017, Calendar.DECEMBER, 9).getTime()
+    methodend
+
+    method public Date getIssueDate() 
+        methodret new GregorianCalendar(2017, Calendar.NOVEMBER, 18).getTime()
+    methodend
+
+    method public String getNumber() 
+        REM TODO Auto-generated method stub
+        methodret "RE-20171118/506"
+    methodend
+
+    method public String getOwnBIC() 
+        REM TODO Auto-generated method stub
+        methodret "COBADEFFXXX"
+    methodend
+
+    method public String getOwnBankName() 
+        REM TODO Auto-generated method stub
+        methodret "Commerzbank"
+    methodend
+
+    method public String getOwnCountry() 
+        REM TODO Auto-generated method stub
+        methodret "DE"
+    methodend
+
+    method public String getOwnIBAN() 
+        REM TODO Auto-generated method stub
+        methodret "DE88 2008 0000 0970 3757 00"
+    methodend
+
+    method public String getOwnLocation() 
+        REM TODO Auto-generated method stub
+        methodret "Stadthausen"
+    methodend
+
+    method public String getOwnOrganisationFullPlaintextInfo() 
+        REM TODO Auto-generated method stub
+        methodret "Bei Spiel GmbH\n" + "Ecke 12\n" + "12345 Stadthausen\n" + "Geschäftsführer: Max Mustermann"
+    methodend
+
+    method public String getOwnOrganisationName() 
+        REM TODO Auto-generated method stub
+        methodret "Bei Spiel GmbH"
+    methodend
+
+    method public String getOwnPaymentInfoText() 
+        REM TODO Auto-generated method stub
+        methodret null()
+    methodend
+
+    method public String getOwnStreet() 
+        methodret "Ecke 12"
+    methodend
+
+    method public String getOwnTaxID() 
+        methodret "22/815/0815/4"
+    methodend
+
+    method public String getOwnVATID() 
+        methodret "DE136695976"
+    methodend
+
+    method public String getOwnZIP() 
+        methodret "12345"
+    methodend
+
+    method public String getPaymentTermDescription() 
+        REM TODO Auto-generated method stub
+        methodret null()
+    methodend
+    
+    method public IZUGFeRDExportableContact getRecipient() 
+        methodret new Contact()
+    methodend
+
+    method public String getReferenceNumber() 
+        REM TODO Auto-generated method stub
+        methodret null()
+    methodend
+
+    method public IZUGFeRDAllowanceCharge[] getZFAllowances() 
+        REM TODO Auto-generated method stub
+        methodret null()
+    methodend
+
+    method public IZUGFeRDAllowanceCharge[] getZFCharges() 
+        REM TODO Auto-generated method stub
+        methodret null()
+    methodend
+
+    method public IZUGFeRDExportableItem[] getZFItems() 
+        allItems! = Array.newInstance(Class.forName("org.mustangproject.ZUGFeRD.IZUGFeRDExportableItem"),3) 
+        designProduct! = new Product("", "Künstlerische Gestaltung (Stunde): Einer Beispielrechnung", "HUR",new BigDecimal("7.000000"))
+        balloonProduct! = new Product("", "Luftballon: Bunt, ca. 500ml", "C62", new BigDecimal("19.000000"))
+        airProduct! = new Product("", "Heiße Luft pro Liter", "LTR", new BigDecimal("19.000000"))
+        allItems![0] = new Item(new BigDecimal("160"), new BigDecimal("1"), designProduct!)
+        allItems![1] = new Item(new BigDecimal("0.79"), new BigDecimal("400"), balloonProduct!)
+        allItems![2] = new Item(new BigDecimal("0.10"), new BigDecimal("200"), airProduct!)
+        methodret allItems!
+    methodend
+
+    method public IZUGFeRDAllowanceCharge[] getZFLogisticsServiceCharges() 
+        REM TODO Auto-generated method stub
+        methodret null()
+    methodend
+    
+classend
+
+REM Class.forName("use org.mustangproject.ZUGFeRD.IZUGFeRDExportableItem",err=classpath_err)
+
+pdf$ = BBjAPI().getFileSystem().resolvePath("XInvoiceTools/zugferd/MustangGnuaccountingBeispielRE-20170509_505blanko.pdf")
+pdf_out$ = pdf$(1,len(pdf$)-10)+"out.pdf"
+
+mwr! = new MustangWriter()
+ze! = new ZUGFeRDExporterFromA1Factory().setProducer("BASIS BBj")
+:                    .setCreator(System.getProperty("user.name"))
+:                    .load(pdf$)
+ze!.PDFattachZugferdFile(mwr!)
+ze!.export(pdf_out$)
+        
+end
+
+classpath_err:
+    PRINT "Add the mustang...jar to your classpath!"
