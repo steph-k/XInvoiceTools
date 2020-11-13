@@ -144,7 +144,7 @@ class public Product implements IZUGFeRDExportableProduct
     methodend
 
     method public void setVATPercent(BigDecimal vATPercent!) 
-        VATPercent! = vATPercent!
+        #VATPercent! = vATPercent!
     methodend
 
 classend
